@@ -5,8 +5,9 @@ df_negative =pd.read_csv("train_Arabic_tweets_negative.tsv", delimiter="\t")
 df_positive =pd.read_csv("train_Arabic_tweets_positive.tsv", delimiter="\t")
 
 
-tsv_file = open("AllData.tsv", "a", encoding='utf-8')
+tsv_file = open("AllData.tsv", "w", encoding='utf-8')
 writer = csv.writer(tsv_file, delimiter="\t")
+writer.writerow(["type","tweets"])
 for i in range(len(df_positive)):
     r = list(df_positive.loc[i, :])
     writer.writerow(r)
