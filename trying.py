@@ -1,15 +1,18 @@
 import csv
 import re
 
+import numpy as np
 import pandas as pd
+import regex
 
 data = pd.read_csv("AllData.tsv", delimiter="\t")
+
 tsv_file = open("NewData.tsv", "w", encoding='utf-8')
 writer = csv.writer(tsv_file, delimiter="\t")
 stopwords = pd.read_csv("arabic.csv")
-newfile = []
 
 stopwordsList = stopwords['word'].values.tolist()
+
 emoji = re.compile("["
                   u"\U0001F600-\U0001F64F"  # emoticons
                   u"\U0001F300-\U0001F5FF"  # symbols & pictographs
@@ -30,22 +33,32 @@ emoji = re.compile("["
                   u"\ufe0f"  # dingbats
                   u"\u3030"
                   "]+",re.UNICODE)
-englishwords = re.compile(r'\s*[A-Za-z]+\b' )
-num = re.compile(r'[0-9\(\)/]+')
-special = re.compile('[^\w]+')
-underscore = re.compile('[\_]+')
+tashkeel = re.compile("["
+        u"\u064b"
+        u"\u064f"
+        u"\u064c"
+        u"\u0652"
+        u"\u064d"
+        u"\u0650"
+        u"\u0651"
+        u"\u064e"
+        "]+",re.UNICODE)
+nonarabic = regex.compile(u'[^\p{Arabic}]')
 repeated = re.compile(r'(.)\1{1,}', re.IGNORECASE)
 aranum = re.compile(r'[٠-٩\(\)/]+')
+
+
 j = 0
 writer.writerow(["type","tweets"])
 for i in data['tweets']:
     line = emoji.sub(r'',i)
-    line = num.sub('',line)
+    line = tashkeel.sub(r'',line)
+    line = nonarabic.sub(u' ', line)
+
     line = aranum.sub('',line)
-    line = special.sub(' ',line)
-    line = underscore.sub(' ',line)
+
     line = repeated.sub(r'\1',line)
-    line = englishwords.sub('', line)
+
     line = line.rstrip()
     stringList = line.split()
     newtext = [x for x in stringList if x not in stopwordsList]
