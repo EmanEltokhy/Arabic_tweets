@@ -1,6 +1,5 @@
 import csv
 import re
-
 import numpy as np
 import pandas as pd
 import regex
@@ -54,11 +53,8 @@ for i in data['tweets']:
     line = emoji.sub(r'',i)
     line = tashkeel.sub(r'',line)
     line = nonarabic.sub(u' ', line)
-
     line = aranum.sub('',line)
-
     line = repeated.sub(r'\1',line)
-
     line = line.rstrip()
     stringList = line.split()
     newtext = [x for x in stringList if x not in stopwordsList]

@@ -6,9 +6,14 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.model_selection import cross_val_score
 from sklearn import svm
 from sklearn import preprocessing
+from sklearn.utils import shuffle
 
 #load data
 data = pd.read_csv("NewData.tsv", delimiter="\t")
+data['tweets'].replace('', np.nan, inplace=True)
+data.dropna()
+data = shuffle(data,random_state=80)
+head(data)
 # Feature Engineering with TFIDF
 word_vectorizer = TfidfVectorizer(
     sublinear_tf=True,
@@ -37,4 +42,12 @@ SVMmodel=svm.SVC(C=1,kernel="linear",random_state=20)
 
 #cross validation for splitting and shuffling data
 cross_val_svm = cross_val_score(SVMmodel,row,typecol,cv=20)
-print(format(np.mean(cross_val_svm)))
+print('average of cross : {:.3f}'.format(np.mean(cross_val_svm)))
+
+# Calculate F1 Score
+scores = cross_val_score(SVMmodel, row, typecol, cv=20, scoring='f1_weighted')
+print('average of F1 scores: {:.3f}'.format(np.mean(scores)))
+
+# Calculate Accuracy
+scores = cross_val_score(SVMmodel, row, typecol, cv=20, scoring='accuracy')
+print('average of Accuracy scores: {:.3f}'.format(np.mean(scores)))

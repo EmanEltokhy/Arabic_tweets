@@ -2,6 +2,7 @@ import numpy as np
 import pandas as pd
 import warnings
 from sklearn.tree import DecisionTreeClassifier
+from sklearn.utils import shuffle
 warnings.filterwarnings("ignore")
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn import preprocessing
@@ -15,7 +16,7 @@ Data = pd.read_csv("NewData.tsv", delimiter="\t")
 # Deleting Null Tweets
 Data['tweets'].replace('', np.nan, inplace=True)
 Data.dropna()
-
+Data = shuffle(Data,random_state=80)
 # Feature Engineering with TFIDF
 word_vectorizer = TfidfVectorizer(
     sublinear_tf=True,
